@@ -1,6 +1,6 @@
 # Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
 
-# app.py
+# Enhanced Gear Version with Full Profile Mapping
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ from collections import Counter
 import json
 
 st.set_page_config(page_title="Working Genius Team Model", layout="wide")
-st.title("Working Genius Team Model")
+st.title("Working Genius Team Model — Gear Enhanced")
 
 # Define the team profiles with full WG profile (Genius, Competency, Frustration)
 team = {
@@ -28,7 +28,7 @@ for member in team.keys():
     frustration_selection = st.sidebar.multiselect(f"{member}'s Frustrations", ["W", "I", "D", "G", "E", "T"], default=team[member]["Frustration"], key=member+"_Frustration")
     team[member] = {"Genius": genius_selection, "Competency": competency_selection, "Frustration": frustration_selection}
 
-# Flatten geniuses, competencies, and frustrations for distribution
+# Flatten profiles for distribution
 all_geniuses = [genius for member in team.values() for genius in member["Genius"]]
 all_competencies = [comp for member in team.values() for comp in member["Competency"]]
 all_frustrations = [frust for member in team.values() for frust in member["Frustration"]]
@@ -74,7 +74,6 @@ for phase, needed in project_phases.items():
     coverage_score = sum(genius_counts[genius] for genius in needed)
     coverage_report[phase] = coverage_score
 
-# Show phase coverage as bar chart
 st.subheader("Team Coverage per Project Phase (Genius Only)")
 fig2, ax2 = plt.subplots(figsize=(10, 4))
 ax2.bar(coverage_report.keys(), coverage_report.values(), color='salmon')
@@ -84,18 +83,51 @@ ax2.set_title("Coverage of Geniuses per Project Phase")
 plt.xticks(rotation=15)
 st.pyplot(fig2)
 
-# Network Graph of Team Geniuses
-st.subheader("Team Genius Relationship Map")
+# Enhanced Network Graph of Team Profiles
+st.subheader("Enhanced Team Genius Relationship Map")
 G = nx.Graph()
+
+# Add relationships for all 3 types
 for member, profile in team.items():
     for genius in profile["Genius"]:
-        G.add_edge(member, genius)
+        G.add_edge(member, genius, relation='Genius')
+    for comp in profile["Competency"]:
+        G.add_edge(member, comp, relation='Competency')
+    for frust in profile["Frustration"]:
+        G.add_edge(member, frust, relation='Frustration')
 
-fig3, ax3 = plt.subplots(figsize=(8, 6))
 pos = nx.spring_layout(G, seed=42)
-nx.draw(G, pos, with_labels=True, node_color='lightgreen', node_size=1200, font_size=10, ax=ax3, edge_color='gray')
-ax3.set_title("Visual Map of Team Geniuses")
+fig3, ax3 = plt.subplots(figsize=(10, 7))
+
+# Draw edges by type
+edge_colors = []
+edge_styles = []
+for (u, v, d) in G.edges(data=True):
+    if d['relation'] == 'Genius':
+        edge_colors.append((0/255,160/255,73/255))
+        edge_styles.append('solid')
+    elif d['relation'] == 'Competency':
+        edge_colors.append((251/255,195/255,49/255))
+        edge_styles.append('solid')
+    else:
+        edge_colors.append((203/255,105/255,91/255))
+        edge_styles.append('dashed')
+
+for style in set(edge_styles):
+    idx = [i for i, s in enumerate(edge_styles) if s == style]
+    edges = [list(G.edges())[i] for i in idx]
+    ec = [edge_colors[i] for i in idx]
+    nx.draw_networkx_edges(G, pos, edgelist=edges, edge_color=ec, style=style, width=2, ax=ax3)
+
+# Draw nodes with gear shape simulated (star)
+nx.draw_networkx_nodes(G, pos, node_color='lightgray', node_shape='*', node_size=1500, ax=ax3)
+nx.draw_networkx_labels(G, pos, font_size=10, ax=ax3)
+
+plt.title("Gear-Shaped Team Relationship Map")
 st.pyplot(fig3)
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("Developed as a Working Genius Visual Tool — Gear Enhanced")
 
 # Export full team profile as JSON
 if st.sidebar.button("Export Current Team Profile"):
@@ -105,9 +137,6 @@ if st.sidebar.button("Export Current Team Profile"):
         file_name="working_genius_full_profile.json",
         mime="application/json"
     )
-
-st.sidebar.markdown("---")
-st.sidebar.markdown("Developed as a Working Genius Visual Tool")
 
 # requirements.txt
 
