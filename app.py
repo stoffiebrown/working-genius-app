@@ -1,3 +1,7 @@
+# Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
+
+# app.py
+
 import streamlit as st
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -12,7 +16,7 @@ team = {
     "Anne": ["G", "T"],
     "Molly": ["I", "D"],
     "Allison": ["I", "D"],
-    "You": ["W", "E"]
+    "Kris": ["W", "E"]
 }
 
 # Allow user to modify team interactively
@@ -82,3 +86,9 @@ if st.sidebar.button("Export Current Team Profile"):
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("Developed as a Working Genius Visual Tool")
+
+# requirements.txt
+
+# streamlit
+# matplotlib
+# networkx
