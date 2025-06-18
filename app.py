@@ -1,6 +1,6 @@
 # Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
 
-# Enhanced Gear Version with Full Profile Mapping
+# Enhanced Gear Version with Full Profile Mapping and Phase Member Display
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -69,18 +69,32 @@ project_phases = {
     "Stabilization": ["E", "T"]
 }
 
-coverage_report = {}
+phase_members = {}
 for phase, needed in project_phases.items():
-    coverage_score = sum(genius_counts[genius] for genius in needed)
-    coverage_report[phase] = coverage_score
+    members_in_phase = []
+    for member, profile in team.items():
+        if any(genius in profile["Genius"] for genius in needed):
+            members_in_phase.append(member)
+    phase_members[phase] = members_in_phase
 
-st.subheader("Team Coverage per Project Phase (Genius Only)")
-fig2, ax2 = plt.subplots(figsize=(10, 4))
-ax2.bar(coverage_report.keys(), coverage_report.values(), color='salmon')
-ax2.set_xlabel("Project Phase")
-ax2.set_ylabel("Coverage Score")
-ax2.set_title("Coverage of Geniuses per Project Phase")
+# Display individual members per phase with colors
+st.subheader("Team Coverage per Project Phase (Individuals)")
+colors = [(0/255, 160/255, 73/255), (251/255, 195/255, 49/255), (203/255, 105/255, 91/255), (100/255, 149/255, 237/255), (255/255, 140/255, 0/255)]
+fig2, ax2 = plt.subplots(figsize=(10, 6))
+
+for idx, (phase, members) in enumerate(phase_members.items()):
+    for i, member in enumerate(members):
+        ax2.bar(phase, 1, bottom=i, color=colors[i % len(colors)], label=member if i == 0 else "")
+
+ax2.set_ylabel("Number of Team Members")
+ax2.set_title("Team Member Participation in Each Phase")
 plt.xticks(rotation=15)
+# Only add legend for first occurrence
+handles, labels_unique = [], []
+for i, member in enumerate(set(m for members in phase_members.values() for m in members)):
+    handles.append(plt.Rectangle((0,0),1,1,color=colors[i % len(colors)]))
+    labels_unique.append(member)
+ax2.legend(handles, labels_unique, title="Members")
 st.pyplot(fig2)
 
 # Enhanced Network Graph of Team Profiles
