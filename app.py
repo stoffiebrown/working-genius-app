@@ -1,6 +1,6 @@
 # Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
 
-# Enhanced Gear Version with Full Profile Mapping and Phase Member Display
+# Enhanced Gear Version with Full Profile Mapping and Phase Member Display (updated logic)
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -60,7 +60,7 @@ ax.set_xticklabels(labels)
 ax.legend()
 st.pyplot(fig)
 
-# Project Phase Simulation based on Genius only
+# Updated Project Phase Simulation based on Genius AND Competency
 project_phases = {
     "Ideation": ["W", "I"],
     "Vetting": ["D"],
@@ -73,7 +73,7 @@ phase_members = {}
 for phase, needed in project_phases.items():
     members_in_phase = []
     for member, profile in team.items():
-        if any(genius in profile["Genius"] for genius in needed):
+        if any(genius in (profile["Genius"] + profile["Competency"]) for genius in needed):
             members_in_phase.append(member)
     phase_members[phase] = members_in_phase
 
