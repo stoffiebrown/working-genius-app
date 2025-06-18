@@ -1,6 +1,6 @@
 # Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
 
-# Weighted Gear Version with Gradient Phase Coverage and Distinct Member Colors
+# Weighted Version with Intuitive Relationship Map and Distinct Member Colors
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ from collections import Counter
 import json
 
 st.set_page_config(page_title="Working Genius Team Model", layout="wide")
-st.title("Working Genius Team Model — Weighted Gear Enhanced")
+st.title("Working Genius Team Model — Weighted & Simplified Relationship Map")
 
 # Define the team profiles with full WG profile (Genius, Competency, Frustration)
 team = {
@@ -42,24 +42,22 @@ all_competencies = [comp for member in team.values() for comp in member["Compete
 all_frustrations = [frust for member in team.values() for frust in member["Frustration"]]
 
 # Count occurrences
+labels = sorted(set(all_geniuses + all_competencies + all_frustrations))
 genius_counts = Counter(all_geniuses)
 competency_counts = Counter(all_competencies)
 frustration_counts = Counter(all_frustrations)
 
-# Bar chart of full distribution
-st.subheader("Team Distribution: Genius, Competency, Frustration")
-labels = sorted(set(all_geniuses + all_competencies + all_frustrations))
 g_counts = [genius_counts[label] for label in labels]
 c_counts = [competency_counts[label] for label in labels]
 f_counts = [frustration_counts[label] for label in labels]
 
+st.subheader("Team Distribution: Genius, Competency, Frustration")
 fig, ax = plt.subplots(figsize=(10, 5))
 bar_width = 0.25
 index = range(len(labels))
 ax.bar(index, g_counts, bar_width, label='Genius', color=(0/255, 160/255, 73/255))
 ax.bar([i + bar_width for i in index], c_counts, bar_width, label='Competency', color=(251/255, 195/255, 49/255))
 ax.bar([i + 2*bar_width for i in index], f_counts, bar_width, label='Frustration', color=(203/255, 105/255, 91/255))
-
 ax.set_xlabel("Working Genius Type")
 ax.set_ylabel("Count")
 ax.set_title("Current Distribution of Working Genius Profiles")
@@ -68,7 +66,7 @@ ax.set_xticklabels(labels)
 ax.legend()
 st.pyplot(fig)
 
-# Weighted Project Phase Simulation based on Genius (1.0) and Competency (0.5)
+# Weighted Project Phase Simulation
 project_phases = {
     "Ideation": ["W", "I"],
     "Vetting": ["D"],
@@ -102,11 +100,17 @@ labels_unique = list(team.keys())
 ax2.legend(handles, labels_unique, title="Members")
 st.pyplot(fig2)
 
-# Enhanced Network Graph of Team Profiles
-st.subheader("Enhanced Team Genius Relationship Map")
+# Simplified Network Graph
+st.subheader("Simplified Team Relationship Map")
 G = nx.Graph()
 
-# Add relationships for all 3 types
+# Add nodes for team members and types
+for member in team.keys():
+    G.add_node(member, type='member')
+for genius_type in ["W", "I", "D", "G", "E", "T"]:
+    G.add_node(genius_type, type='genius')
+
+# Add edges with relation type
 for member, profile in team.items():
     for genius in profile["Genius"]:
         G.add_edge(member, genius, relation='Genius')
@@ -119,34 +123,27 @@ pos = nx.spring_layout(G, seed=42)
 fig3, ax3 = plt.subplots(figsize=(10, 7))
 
 # Draw edges by type
-edge_colors = []
-edge_styles = []
 for (u, v, d) in G.edges(data=True):
     if d['relation'] == 'Genius':
-        edge_colors.append((0/255,160/255,73/255))
-        edge_styles.append('solid')
+        nx.draw_networkx_edges(G, pos, edgelist=[(u,v)], edge_color=(0/255,160/255,73/255), width=2, ax=ax3)
     elif d['relation'] == 'Competency':
-        edge_colors.append((251/255,195/255,49/255))
-        edge_styles.append('solid')
+        nx.draw_networkx_edges(G, pos, edgelist=[(u,v)], edge_color=(251/255,195/255,49/255), width=2, ax=ax3)
     else:
-        edge_colors.append((203/255,105/255,91/255))
-        edge_styles.append('dashed')
+        nx.draw_networkx_edges(G, pos, edgelist=[(u,v)], edge_color=(203/255,105/255,91/255), style='dashed', width=2, ax=ax3)
 
-for style in set(edge_styles):
-    idx = [i for i, s in enumerate(edge_styles) if s == style]
-    edges = [list(G.edges())[i] for i in idx]
-    ec = [edge_colors[i] for i in idx]
-    nx.draw_networkx_edges(G, pos, edgelist=edges, edge_color=ec, style=style, width=2, ax=ax3)
+# Draw nodes with distinct shapes
+node_shapes = {'member': 'o', 'genius': 's'}
+for ntype in node_shapes:
+    nodelist = [n for n in G.nodes if G.nodes[n]['type'] == ntype]
+    color_list = [member_colors[n] if n in member_colors else 'lightgray' for n in nodelist]
+    nx.draw_networkx_nodes(G, pos, nodelist=nodelist, node_shape=node_shapes[ntype], node_color=color_list, node_size=1500, ax=ax3)
 
-# Draw nodes with gear shape simulated (star)
-nx.draw_networkx_nodes(G, pos, node_color='lightgray', node_shape='*', node_size=1500, ax=ax3)
 nx.draw_networkx_labels(G, pos, font_size=10, ax=ax3)
-
-plt.title("Gear-Shaped Team Relationship Map")
+plt.title("Simplified Team Relationship Map")
 st.pyplot(fig3)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Developed as a Working Genius Visual Tool — Gear Enhanced")
+st.sidebar.markdown("Developed as a Working Genius Visual Tool")
 
 # Export full team profile as JSON
 if st.sidebar.button("Export Current Team Profile"):
@@ -158,7 +155,6 @@ if st.sidebar.button("Export Current Team Profile"):
     )
 
 # requirements.txt
-
 # streamlit
 # matplotlib
 # networkx
