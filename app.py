@@ -1,6 +1,6 @@
-# Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
+# MM Leadership - Working Genius Team Model (Python Web App using Streamlit)
 
-# Weighted Version with Intuitive Relationship Map and Distinct Member Colors
+# Weighted Version with Intuitive Relationship Map and Harmonized Member Colors
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -8,8 +8,8 @@ import networkx as nx
 from collections import Counter
 import json
 
-st.set_page_config(page_title="Working Genius Team Model", layout="wide")
-st.title("Working Genius Team Model — Weighted & Simplified Relationship Map")
+st.set_page_config(page_title="MM Leadership - Working Genius Team Model", layout="wide")
+st.title("MM Leadership - Working Genius Team Model — Weighted & Simplified Relationship Map")
 
 # Define the team profiles with full WG profile (Genius, Competency, Frustration)
 team = {
@@ -19,12 +19,12 @@ team = {
     "Kris": {"Genius": ["W", "E"], "Competency": ["D", "I"], "Frustration": ["G", "T"]}
 }
 
-# Assign distinct colors to each team member
+# Assign harmonized colors to each team member
 member_colors = {
-    "Anne": (0/255, 102/255, 204/255),  # Blue
-    "Molly": (204/255, 102/255, 0/255), # Orange
-    "Allison": (153/255, 51/255, 255/255), # Purple
-    "Kris": (0/255, 153/255, 102/255)  # Teal
+    "Anne": (255/255, 127/255, 80/255),    # Coral
+    "Molly": (135/255, 206/255, 235/255),  # Sky Blue
+    "Allison": (221/255, 160/255, 221/255), # Plum
+    "Kris": (144/255, 238/255, 144/255)    # Light Green
 }
 
 # Allow user to modify team interactively
@@ -143,7 +143,7 @@ plt.title("Simplified Team Relationship Map")
 st.pyplot(fig3)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Developed as a Working Genius Visual Tool")
+st.sidebar.markdown("Developed as MM Leadership Working Genius Visual Tool")
 
 # Export full team profile as JSON
 if st.sidebar.button("Export Current Team Profile"):
