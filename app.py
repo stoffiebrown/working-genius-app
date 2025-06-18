@@ -1,9 +1,8 @@
-# Working Genius Team Model (Python Web App Version using Streamlit)
-
 import streamlit as st
 import matplotlib.pyplot as plt
 import networkx as nx
 from collections import Counter
+import json
 
 st.set_page_config(page_title="Working Genius Team Model", layout="wide")
 st.title("Working Genius Team Model")
@@ -73,7 +72,6 @@ ax3.set_title("Visual Map of Team Geniuses")
 st.pyplot(fig3)
 
 # Export team profile as JSON
-import json
 if st.sidebar.button("Export Current Team Profile"):
     st.sidebar.download_button(
         label="Download Team Profile",
