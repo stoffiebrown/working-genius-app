@@ -1,6 +1,6 @@
 # Working Genius Team Model Deployment Bundle (Python Web App using Streamlit)
 
-# Enhanced Gear Version with Full Profile Mapping and Phase Member Display (consistent member colors)
+# Weighted Gear Version with Gradient Phase Coverage and Distinct Member Colors
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ from collections import Counter
 import json
 
 st.set_page_config(page_title="Working Genius Team Model", layout="wide")
-st.title("Working Genius Team Model — Gear Enhanced")
+st.title("Working Genius Team Model — Weighted Gear Enhanced")
 
 # Define the team profiles with full WG profile (Genius, Competency, Frustration)
 team = {
@@ -19,12 +19,12 @@ team = {
     "Kris": {"Genius": ["W", "E"], "Competency": ["D", "I"], "Frustration": ["G", "T"]}
 }
 
-# Assign consistent colors to each team member
+# Assign distinct colors to each team member
 member_colors = {
-    "Anne": (0/255, 160/255, 73/255),
-    "Molly": (251/255, 195/255, 49/255),
-    "Allison": (203/255, 105/255, 91/255),
-    "Kris": (100/255, 149/255, 237/255)
+    "Anne": (0/255, 102/255, 204/255),  # Blue
+    "Molly": (204/255, 102/255, 0/255), # Orange
+    "Allison": (153/255, 51/255, 255/255), # Purple
+    "Kris": (0/255, 153/255, 102/255)  # Teal
 }
 
 # Allow user to modify team interactively
@@ -68,7 +68,7 @@ ax.set_xticklabels(labels)
 ax.legend()
 st.pyplot(fig)
 
-# Updated Project Phase Simulation based on Genius AND Competency
+# Weighted Project Phase Simulation based on Genius (1.0) and Competency (0.5)
 project_phases = {
     "Ideation": ["W", "I"],
     "Vetting": ["D"],
@@ -77,24 +77,24 @@ project_phases = {
     "Stabilization": ["E", "T"]
 }
 
-phase_members = {}
-for phase, needed in project_phases.items():
-    members_in_phase = []
-    for member, profile in team.items():
-        if any(genius in (profile["Genius"] + profile["Competency"]) for genius in needed):
-            members_in_phase.append(member)
-    phase_members[phase] = members_in_phase
-
-# Display individual members per phase with consistent colors
-st.subheader("Team Coverage per Project Phase (Individuals)")
+st.subheader("Team Coverage per Project Phase (Weighted Individuals)")
 fig2, ax2 = plt.subplots(figsize=(10, 6))
 
-for idx, (phase, members) in enumerate(phase_members.items()):
-    for i, member in enumerate(members):
-        ax2.bar(phase, 1, bottom=i, color=member_colors[member], label=member if idx == 0 and i == 0 else "")
+for idx, (phase, needed) in enumerate(project_phases.items()):
+    bottom = 0
+    for member in team.keys():
+        weight = 0
+        for genius in needed:
+            if genius in team[member]["Genius"]:
+                weight += 1.0
+            elif genius in team[member]["Competency"]:
+                weight += 0.5
+        if weight > 0:
+            ax2.bar(phase, weight, bottom=bottom, color=member_colors[member], edgecolor='black')
+            bottom += weight
 
-ax2.set_ylabel("Number of Team Members")
-ax2.set_title("Team Member Participation in Each Phase")
+ax2.set_ylabel("Weighted Contribution")
+ax2.set_title("Weighted Team Member Participation per Phase")
 plt.xticks(rotation=15)
 
 handles = [plt.Rectangle((0,0),1,1,color=member_colors[member]) for member in team.keys()]
